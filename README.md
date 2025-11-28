@@ -1,4 +1,4 @@
-# Free Chatbot API - Discord Bot
+# Discord AI Chatbot - Customizable Personality
 
 A production-ready Discord bot with fully programmable personality system. Uses Groq API for fast, free AI responses. Perfect for creating custom Discord bots with any personality you want.
 
@@ -18,8 +18,8 @@ A production-ready Discord bot with fully programmable personality system. Uses 
 
 ```bash
 # Clone the repository
-git clone https://github.com/ethanstoner/free-chatbot-api.git
-cd free-chatbot-api
+git clone https://github.com/ethanstoner/discord-ai-chatbot.git
+cd discord-ai-chatbot
 
 # Create virtual environment
 python3 -m venv venv
