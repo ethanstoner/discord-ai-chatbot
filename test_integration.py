@@ -38,19 +38,16 @@ def throttle_request():
     
     last_request_time = time.time()
 
-# Read personality from chat.py
-with open('chat.py', 'r') as f:
-    content = f.read()
-    import re
-    match = re.search(r'PERSONALITY = """(.*?)"""', content, re.DOTALL)
-    PERSONALITY = match.group(1) if match else "You are helpful."
+# Read personality from environment variable (same as chat.py)
+PERSONALITY = os.getenv('PERSONALITY', """You are a helpful and friendly AI assistant. 
+You enjoy helping people and having conversations.""")
 
 def test_full_conversation():
     """Test a full conversation with throttling"""
     print("=" * 60)
     print("INTEGRATION TEST: Full Conversation Simulation")
     print("=" * 60)
-    print("\nSimulating a real conversation with Song Hui...")
+    print("\nSimulating a real conversation with the chatbot...")
     print("This will send multiple messages with proper throttling.")
     print("\n⏳ Waiting 60 seconds to ensure rate limits are cleared...\n")
     print("(This is necessary because the large personality prompt uses ~5000 tokens)")
@@ -63,7 +60,7 @@ def test_full_conversation():
     test_messages = [
         "hello",
         "who are you?",
-        "tell me about Corey",
+        "tell me about yourself",
         "what do you like to do?",
     ]
     

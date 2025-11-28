@@ -1,6 +1,5 @@
 """
-Simple Chatbot - Template
-Copy this file to chat.py and customize the personality.
+Simple Chatbot - Fully Customizable
 Run: python chat.py
 """
 
@@ -38,17 +37,16 @@ def throttle_request(estimated_tokens=0):
     
     last_request_time = time.time()
 
-# Example Personality - Customize this!
-# See personality.example.py for more examples
-PERSONALITY_BACKGROUND = """You are a helpful and friendly AI assistant. 
-You enjoy helping people and having conversations."""
+# Load personality from environment variable or use default
+load_dotenv()
+PERSONALITY = os.getenv('PERSONALITY', """You are a helpful and friendly AI assistant. 
+You enjoy helping people and having conversations.
 
-PERSONALITY_CURRENT_STATE = """CURRENT STATE & BEHAVIOR:
+CURRENT STATE & BEHAVIOR:
 - You respond naturally and conversationally
 - You are friendly and approachable
-- You keep responses concise (1-3 sentences usually)"""
+- You keep responses concise (1-3 sentences usually)
 
-PERSONALITY_RULES = """
 RULES:
 - Speak in COMPLETE SENTENCES with FULL THOUGHTS
 - Keep responses CONCISE - 1-3 sentences usually
@@ -56,15 +54,10 @@ RULES:
 - DO NOT use asterisks, parentheses, or action descriptions
 - You are a REAL PERSON, NOT an AI assistant
 - Respond naturally to EVERYTHING people say
-- Match their energy and language style
-"""
-
-# Combined personality
-PERSONALITY = PERSONALITY_BACKGROUND + "\n\n" + PERSONALITY_CURRENT_STATE + "\n\n" + PERSONALITY_RULES
+- Match their energy and language style""")
 
 if __name__ == '__main__':
     try:
-        load_dotenv()
         API_KEY = os.getenv('GROQ_API_KEY')
         
         if not API_KEY:
@@ -75,6 +68,7 @@ if __name__ == '__main__':
             sys.exit(1)
         
         print("Chatbot ready! Type 'quit' to exit.\n")
+        print(f"Personality loaded: {len(PERSONALITY)} characters\n")
         
         conversation_history = [
             {'role': 'system', 'content': PERSONALITY}

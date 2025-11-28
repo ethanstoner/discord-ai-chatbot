@@ -16,10 +16,10 @@ from pathlib import Path
 TURN_STATE_FILE = Path(__file__).parent / '.turn_state'
 TURN_LOCK_FILE = Path(__file__).parent / '.turn_lock'
 
-# Bot identifiers
-BOT_SONG_HUI = "SongHui"
-BOT_HASSAN = "Hassan"
-BOT_TRUMP = "Trump"
+# Bot identifiers (customize these for your bots)
+BOT_1 = "Bot1"
+BOT_2 = "Bot2"
+BOT_3 = "Bot3"
 
 # Decay factor - each time a bot responds, their chance is multiplied by this
 # Lower decay = less reduction per response = more even distribution
@@ -37,7 +37,7 @@ class TurnManager:
         """Ensure the state file exists"""
         if not TURN_STATE_FILE.exists():
             # Initialize with equal probabilities
-            self.write_state(BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0})
+            self.write_state(BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0})
     
     def read_state(self, lock_file=None):
         """Read current state from file (with optional lock file handle)"""
@@ -50,16 +50,16 @@ class TurnManager:
                         if len(lines) >= 4:
                             last_bot = lines[0]
                             probs = {
-                                BOT_SONG_HUI: float(lines[1]),
-                                BOT_HASSAN: float(lines[2]),
-                                BOT_TRUMP: float(lines[3])
+                                BOT_1: float(lines[1]),
+                                BOT_2: float(lines[2]),
+                                BOT_3: float(lines[3])
                             }
                             return last_bot, probs
                 # Default state
-                return BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                return BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
             except Exception as e:
                 print(f"Error reading turn state: {e}", flush=True)
-                return BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                return BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
         
         # Otherwise, acquire lock and read
         max_retries = 5
@@ -85,13 +85,13 @@ class TurnManager:
                                 if len(lines) >= 4:
                                     last_bot = lines[0]
                                     probs = {
-                                        BOT_SONG_HUI: float(lines[1]),
-                                        BOT_HASSAN: float(lines[2]),
-                                        BOT_TRUMP: float(lines[3])
+                                        BOT_1: float(lines[1]),
+                                        BOT_2: float(lines[2]),
+                                        BOT_3: float(lines[3])
                                     }
                                     return last_bot, probs
                         # Default state
-                        return BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                        return BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
                     finally:
                         fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
             except Exception as e:
@@ -100,8 +100,8 @@ class TurnManager:
                     continue
                 else:
                     print(f"Error reading turn state: {e}", flush=True)
-                    return BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
-        return BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                    return BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
+        return BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
     
     def write_state(self, last_bot, probabilities, lock_file=None):
         """Write state to file (with optional lock file handle)"""
@@ -110,9 +110,9 @@ class TurnManager:
             try:
                 with open(TURN_STATE_FILE, 'w') as f:
                     f.write(f"{last_bot}\n")
-                    f.write(f"{probabilities[BOT_SONG_HUI]}\n")
-                    f.write(f"{probabilities[BOT_HASSAN]}\n")
-                    f.write(f"{probabilities[BOT_TRUMP]}\n")
+                    f.write(f"{probabilities[BOT_1]}\n")
+                    f.write(f"{probabilities[BOT_2]}\n")
+                    f.write(f"{probabilities[BOT_3]}\n")
                 return
             except Exception as e:
                 print(f"Error writing turn state: {e}", flush=True)
@@ -138,9 +138,9 @@ class TurnManager:
                     try:
                         with open(TURN_STATE_FILE, 'w') as f:
                             f.write(f"{last_bot}\n")
-                            f.write(f"{probabilities[BOT_SONG_HUI]}\n")
-                            f.write(f"{probabilities[BOT_HASSAN]}\n")
-                            f.write(f"{probabilities[BOT_TRUMP]}\n")
+                            f.write(f"{probabilities[BOT_1]}\n")
+                            f.write(f"{probabilities[BOT_2]}\n")
+                            f.write(f"{probabilities[BOT_3]}\n")
                         return
                     finally:
                         fcntl.flock(lock_f.fileno(), fcntl.LOCK_UN)
@@ -177,7 +177,7 @@ class TurnManager:
                             
                             # Ensure we have valid probabilities
                             if not probabilities:
-                                probabilities = {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                                probabilities = {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
                             
                             # Gradually recover probabilities (move them back toward 1.0)
                             # Faster recovery = better conversation flow
@@ -189,7 +189,7 @@ class TurnManager:
                             # Normalize probabilities to sum to 3
                             total = sum(probabilities.values())
                             if total == 0:
-                                probabilities = {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0}
+                                probabilities = {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0}
                                 total = 3.0
                             
                             # Calculate normalized probabilities (sum to 1.0)
@@ -233,13 +233,13 @@ class TurnManager:
                     else:
                         raise e
             # If we get here, something went wrong
-            return random.choice([BOT_SONG_HUI, BOT_HASSAN, BOT_TRUMP])
+            return random.choice([BOT_1, BOT_2, BOT_3])
         except Exception as e:
             print(f"Error in turn_manager.select_responder: {e}", flush=True)
             import traceback
             traceback.print_exc()
             # On error, return random bot
-            return random.choice([BOT_SONG_HUI, BOT_HASSAN, BOT_TRUMP])
+            return random.choice([BOT_1, BOT_2, BOT_3])
     
     def should_respond(self, bot_name, message_id=None):
         """Determine if this bot should respond based on turn system"""
@@ -257,7 +257,7 @@ class TurnManager:
     
     def reset_probabilities(self):
         """Reset all probabilities to equal (1.0 each)"""
-        self.write_state(BOT_SONG_HUI, {BOT_SONG_HUI: 1.0, BOT_HASSAN: 1.0, BOT_TRUMP: 1.0})
+        self.write_state(BOT_1, {BOT_1: 1.0, BOT_2: 1.0, BOT_3: 1.0})
 
 # Global instance
 _turn_manager = None

@@ -31,7 +31,7 @@ def test_token_estimation():
     
     test_strings = [
         "Hello world",
-        "You are Song Hui, a 53-year-old Chinese man.",
+        "You are a helpful assistant.",
         "A" * 100,
         "A" * 1000,
     ]
