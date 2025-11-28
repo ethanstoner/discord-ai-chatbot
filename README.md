@@ -192,6 +192,49 @@ The repository includes additional utilities for running multiple bots:
 
 These are optional and only needed for advanced multi-bot setups.
 
+## Docker Usage
+
+The bot is fully dockerized for easy deployment:
+
+```bash
+# Build the image
+docker-compose build
+
+# Start the bot
+docker-compose up -d
+
+# View logs
+docker-compose logs -f chatbot
+
+# Stop the bot
+docker-compose down
+```
+
+**Resource Limits:**
+- CPU: Limited to 0.5 cores (configurable in docker-compose.yml)
+- Memory: Limited to 512MB (configurable in docker-compose.yml)
+
+The Docker setup automatically loads your `.env` file for configuration.
+
+## Troubleshooting
+
+### Bot not responding?
+
+1. Check that Message Content Intent is enabled in Discord Developer Portal
+2. Verify `TARGET_CHANNEL_ID` in `.env` matches your channel ID (or leave empty for all channels)
+3. Check logs: `docker-compose logs -f` or console output
+4. Verify `.env` file has correct tokens
+
+### Rate limiting?
+
+Groq free tier has limits (30 requests/min, ~6000 tokens/min). The bot automatically handles throttling, but if you hit limits, wait a minute and try again.
+
+### Docker issues?
+
+- Make sure Docker is running
+- Check permissions: `docker-compose logs chatbot`
+- Rebuild: `docker-compose build --no-cache`
+
 ## Notes
 
 - Uses `llama-3.1-8b-instant` model (fastest, smallest)
@@ -199,6 +242,7 @@ These are optional and only needed for advanced multi-bot setups.
 - Automatic throttling - Never hits rate limits!
 - Production-ready and fully tested
 - Per-user conversation memory (separate history for each Discord user)
+- Docker-ready with resource limits
 
 ## License
 
